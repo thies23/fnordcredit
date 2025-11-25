@@ -1,9 +1,12 @@
-FROM node
-RUN mkdir -p /srv/fnordcredit
-WORKDIR /srv/fnordcredit
-COPY package.json /srv/fnordcredit/
-RUN npm install
-COPY . /srv/fnordcredit
-COPY .env.docker /srv/fnordcredit/.env
-EXPOSE 8000
-CMD [ "npm", "start" ]
+FROM node:20
+WORKDIR /app
+RUN apt-get update && apt-get install -y openssl ca-certificates bash
+RUN rm -rf /var/lib/apt/lists/*
+RUN corepack enable && corepack prepare yarn@stable --activate
+COPY package.json yarn.lock ./
+RUN yarn install
+COPY prisma ./prisma
+RUN npx prisma generate
+COPY . .
+EXPOSE 3000
+CMD ["yarn", "dev"]
