@@ -4,6 +4,6 @@ WORKDIR /srv/fnordcredit
 COPY package.json /srv/fnordcredit/
 RUN npm install
 COPY . /srv/fnordcredit
-COPY docker/config-docker.js /srv/fnordcredit/config.js
+COPY .env.docker /srv/fnordcredit/.env
 EXPOSE 8000
 CMD [ "npm", "start" ]
